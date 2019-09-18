@@ -20,4 +20,10 @@ else
     ln -sf /taiga-conf/proxy_params /etc/nginx/proxy_params
 fi
 
-exec nginx -g 'daemon off;'
+mkdir /run/nginx
+nginx -g 'daemon off;' &
+NGINX_PID=$!
+
+trap 'kill -TERM $NGINX_PID' SIGTERM
+
+wait $NGINX_PID
